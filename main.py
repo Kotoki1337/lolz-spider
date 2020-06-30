@@ -10,6 +10,9 @@ import time
 import pytz
 import re
 
+with open('setting.json', mode='r', encoding='u8') as jfile:
+    token = json.load(jfile)
+
 rankDisc = {
     1 : "白银 I",
     2 : "白银 II",
@@ -140,7 +143,7 @@ medalsDisc = {
 def main(redis_client):
     driver = webdriver.Chrome("./chromedriver.exe")
     print("Current session is {}".format(driver.session_id))
-    driver.get('https://lolz.guru/market/steam/?game[]=730&no_vac=1&medal_min=4&order_by=price_to_up')
+    driver.get(token["marketUrl"])
     time.sleep(10)
     cookie = driver.get_cookie("df_id")
     df_id = cookie["value"]
@@ -241,7 +244,7 @@ def main(redis_client):
         except:
             sold = "This account is not sold before"
 
-        hook = Webhook("")
+        hook = Webhook("token["TOKEN"]")
         embed = Embed(
         description = f'By seller: **{user}** {restorePercents}',
         url = f'https://lolz.guru/{url}',
