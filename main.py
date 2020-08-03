@@ -148,8 +148,7 @@ medalsList_abb = [
     "Дикое пламя",
     "Прорыв",
     "Бладхаунд",
-    "Гидра",
-    "Расколотая сеть"
+    "Гидра"
     ]
 
 medalsPrefix = [
@@ -179,7 +178,9 @@ def main(redis_client):
                 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4170.0 Safari/537.36 Edg/85.0.552.1',
                 'cookie': f'df_id={df_id}'
             }
-            response = requests.get(f'https://lolz.guru/market/steam/?no_vac=1&no_mm_ban=1&medal[]={medalsPrefix_i}%20операции%20«{medalsName}»&order_by=price_to_up', headers=headers)
+            link = f"https://lolz.guru/market/steam/?no_vac=1&no_mm_ban=1&medal[]={medalsPrefix_i}%20операции%20«{medalsName}»&order_by=price_to_up"
+            print(link)
+            response = requests.get(link, headers=headers)
 
             w = open('readPage.html', 'w', encoding='utf-8')
             w.write(response.text)
@@ -302,6 +303,10 @@ def main(redis_client):
 if __name__ == "__main__":
     redis_client = Redis.from_url("redis://:@localhost:6379/0?decode_responses=True")
     while True:
-        main(redis_client)
-        print("Waiting 10 min")
+        try:
+            main(redis_client)
+            print("Success, Waiting 10 min")
+        except Exception as e:
+            print(f"Error: {e}")
+            print("Failed, Waiting 10 min")
         time.sleep(1800)
